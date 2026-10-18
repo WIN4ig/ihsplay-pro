@@ -21,12 +21,10 @@ jobs:
           fetch-depth: 0
           submodules: recursive
 
-      - name: Point core to upstream ihslib + PIN-masked key exchange
+      - name: Point core to the PIN-pairing ihslib fork
         run: |
-          git -C core fetch --depth=1 https://github.com/mariotaku/ihslib.git master
+          git -C core fetch --depth=1 https://github.com/WIN4ig/ihslib.git pin-pairing
           git -C core checkout FETCH_HEAD
-          curl -sL https://github.com/mariotaku/ihslib/pull/4.diff -o /tmp/ihslib-pin.diff
-          git -C core apply /tmp/ihslib-pin.diff
           git -C core log --oneline -1
 
       - name: Download ares-cli-rs

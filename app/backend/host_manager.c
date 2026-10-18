@@ -111,11 +111,9 @@ bool host_manager_discover_at(host_manager_t *manager, const char *ip) {
         commons_log_error("Hosts", "Invalid IP address: %s", ip);
         return false;
     }
-    // Upstream ihslib has no per-address discovery; fall back to broadcast discovery,
-    // which finds the host as long as it answers on the local network.
-    (void) address;
+    // Keep broadcast discovery running while probing a specific host.
     host_manager_discovery_start(manager);
-    return true;
+    return IHS_ClientDiscoverAt(manager->client, &address);
 }
 
 array_list_t *host_manager_get_hosts(host_manager_t *manager) {
@@ -155,8 +153,7 @@ void host_manager_session_request_with_pin(host_manager_t *manager, const IHS_Ho
 }
 
 bool host_manager_session_cancel(host_manager_t *manager) {
-    // Upstream ihslib only exposes cancellation of the authorization stage.
-    return IHS_ClientAuthorizationCancel(manager->client);
+    return IHS_ClientStreamingCancel(manager->client);
 }
 
 void host_manager_register_listener(host_manager_t *manager, const host_manager_listener_t *listener, void *context) {
